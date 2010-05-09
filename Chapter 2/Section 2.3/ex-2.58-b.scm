@@ -35,13 +35,16 @@
       
 ;;Most important thing of all:
 (define (process-expr expr)
-  (let ((expr (if (parenthized-expression? expr) (car expr) expr)))
+  (let ((expr (if (parenthized-expression? expr) (deparenthize expr) expr)))
     (cond ((if (= (length expr) 1) (variable? (car expr)) false) (car expr))
           ((if (= (length expr) 1) (number? (car expr)) false) (car expr))
           ((sum? expr) (make-sum (addend expr)
                                  (augend expr)))
           ((product? expr) (make-product (multiplier expr)
                                          (multiplicand expr))))))
+
+(define (deparenthize expr) (car expr))
+
 ;;'(+ x y)
 (define (sum? x)
   (and (pair? x) (in? '+ x)))
@@ -75,35 +78,12 @@
         ((and (number? m1) (number? m2)) (* m1 m2))
         (else (list m1 '* m2))))
 
-;;'(^ x y)
-(define (exponentiation? x)
-  (and (pair? x) (eq? (car x) '^)))
-
-(define (base x)
-  (cadr x))
-
-(define (exponent x)
-  (caddr x))
-
-(define (make-exponentiation base exponent)
-  (cond ((and (number? base) (number? exponent))
-         (expt base exponent))
-        ((=number? exponent 0) 1)
-        ((=number? exponent 1) base)
-        (else (list '^ base exponent))))
-
 
 
 (define (deriv expr var)
   (cond ((number? expr) 0)
         ((variable? expr)
          (if (same-variable? expr var) 1 0))
-        ((exponentiation? expr)
-         (make-product 
-           (make-product (exponent expr)
-                         (make-exponentiation (base expr)
-                                              (- (exponent expr) 1)))
-           (deriv (base expr) var)))
         ((sum? expr)
          (make-sum (deriv (addend expr) var)
                    (deriv (augend expr) var)))
