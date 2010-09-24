@@ -27,7 +27,7 @@
         (else (cons (car set1) (union-set (cdr set1) set2)))))
 
 
-(define set1 '(a b c d e f))
-(define set2 '(e f g h i j))
+(define set1 '(a b c d e f g))
+(define set2 '(e f g h i j k))
 
 ;;(union-set set1 set2)
