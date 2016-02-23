@@ -1,0 +1,28 @@
+#lang racket
+
+;; Exercise 2.27
+
+(define tree1 (list (list 1 (list 3 4 5) 5 6 7) (list 8 9 10 11)))
+
+(define tree2 (list (list 1 2) (list 3 4)))
+
+(define (last-pair l)
+ (cond ((pair? l)
+        (if (null? (cdr l))
+            (car l)s
+            (last-pair (cdr l))))
+       (else l)))
+
+;;Exercise 2.18
+(define (remove-last l)
+  (if (null? (cdr l))
+      '()
+      (cons (car l) (remove-last (cdr l)))))
+
+(define (deep-reverse l)
+  (if (null? l)
+      l
+      (cons (deep-reverse (last-pair l)) (deep-reverse (remove-last l)))))
+  
+ 
+(deep-reverse tree2)
